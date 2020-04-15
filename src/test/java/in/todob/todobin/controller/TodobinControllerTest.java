@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -57,5 +60,27 @@ public class TodobinControllerTest {
 
         assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/todo/1");
         assertThat(actual).isEqualTo(todo);
+    }
+
+    @Test
+    public void getTodos_returns200withListofTodos() throws Exception {
+        List<Todo> todos = Arrays.asList(
+                Todo.builder()
+                    .id(1L)
+                    .title("Todo 1")
+                    .description("A description")
+                    .build(),
+                Todo.builder()
+                    .id(2L)
+                    .title("Todo 1")
+                    .description("A description")
+                    .build()
+        );
+
+        when(mockTodobinService.getTodos()).thenReturn(todos);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo"))
+                                  .andExpect(status().isOk())
+                                  .andReturn();
     }
 }

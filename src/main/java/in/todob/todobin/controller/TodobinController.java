@@ -4,12 +4,14 @@ import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class TodobinController {
@@ -28,8 +30,13 @@ public class TodobinController {
                                                   .path("/{id}")
                                                   .buildAndExpand(savedTodo.getId()).toUri();
 
-        return ResponseEntity.created(location)
-                             .contentType(MediaType.APPLICATION_JSON)
-                             .body(savedTodo);
+        return ResponseEntity.created(location).contentType(MediaType.APPLICATION_JSON).body(savedTodo);
+    }
+
+    @GetMapping("/todo")
+    public ResponseEntity<List<Todo>> getTodos() {
+        List<Todo> todos = todobinService.getTodos();
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(todos);
     }
 }

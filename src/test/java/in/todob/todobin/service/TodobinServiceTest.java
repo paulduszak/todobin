@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -47,4 +50,25 @@ public class TodobinServiceTest {
         verify(mockTodobinRepository).save(todo);
     }
 
+    @Test
+    public void getTodos_retrievesPersistedTodos() {
+        List<Todo> todos = Arrays.asList(
+                Todo.builder()
+                    .id(1L)
+                    .title("Todo 1")
+                    .description("A description")
+                    .build(),
+                Todo.builder()
+                    .id(2L)
+                    .title("Todo 1")
+                    .description("A description")
+                    .build()
+        );
+
+        when(mockTodobinRepository.findAll()).thenReturn(todos);
+
+        List<Todo> result = todobinService.getTodos();
+
+        assertThat(result).isEqualTo(todos);
+    }
 }
