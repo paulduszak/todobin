@@ -1,5 +1,6 @@
 package in.todob.todobin.service;
 
+import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import org.junit.Before;
@@ -12,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,5 +72,30 @@ public class TodobinServiceTest {
         List<Todo> result = todobinService.getTodos();
 
         assertThat(result).isEqualTo(todos);
+    }
+
+    @Test
+    public void getTodo_returnsTodoIfExists() {
+        Todo todo = Todo.builder()
+                        .id(1L)
+                        .title("A todo")
+                        .description("A todo description")
+                        .build();
+
+        when(mockTodobinRepository.findById(1L)).thenReturn(Optional.ofNullable(todo));
+
+        Todo result = todobinService.getTodo(1L);
+
+        assertThat(result).isEqualTo(todo);
+    }
+
+    @Test
+    public void getTodo_throwsTodoNotFoundException_ifTodoDoesNotExist() {
+        thrown.expect(TodoNotFoundException.class);
+        thrown.expectMessage("Todo with ID '1' not found.");
+
+        when(mockTodobinRepository.findById(1L)).thenReturn(Optional.empty());
+
+        todobinService.getTodo(1L);
     }
 }

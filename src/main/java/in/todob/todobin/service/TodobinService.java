@@ -1,10 +1,12 @@
 package in.todob.todobin.service;
 
+import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodobinService {
@@ -21,5 +23,14 @@ public class TodobinService {
 
     public List<Todo> getTodos() {
         return todobinRepository.findAll();
+    }
+
+    public Todo getTodo(long id) {
+        Optional<Todo> todo = todobinRepository.findById(id);
+
+        if (todo.isPresent())
+            return todo.get();
+        else
+            throw new TodoNotFoundException(id);
     }
 }

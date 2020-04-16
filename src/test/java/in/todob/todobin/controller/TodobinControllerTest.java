@@ -1,6 +1,9 @@
 package in.todob.todobin.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.todob.todobin.exception.ErrorInfo;
+import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
 import org.junit.Before;
@@ -72,7 +75,7 @@ public class TodobinControllerTest {
                     .build(),
                 Todo.builder()
                     .id(2L)
-                    .title("Todo 1")
+                    .title("Todo 2")
                     .description("A description")
                     .build()
         );
@@ -82,5 +85,43 @@ public class TodobinControllerTest {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo"))
                                   .andExpect(status().isOk())
                                   .andReturn();
+
+        List<Todo> actual = om.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Todo>>() {
+        });
+
+        assertThat(actual).isEqualTo(todos);
+    }
+
+    @Test
+    public void getTodo_returns200WithTodo_whenPassedExistingTodoId() throws Exception {
+        Todo todo = Todo.builder()
+                        .id(1L)
+                        .title("Title")
+                        .description("Description")
+                        .build();
+
+        when(mockTodobinService.getTodo(1L)).thenReturn(todo);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/1"))
+                                  .andExpect(status().isOk())
+                                  .andReturn();
+
+        Todo actual = om.readValue(result.getResponse().getContentAsString(), Todo.class);
+
+        assertThat(actual).isEqualTo(todo);
+    }
+
+    @Test
+    public void getTodo_returns404_whenPassedNonexistentTodoId() throws Exception {
+
+        when(mockTodobinService.getTodo(1)).thenThrow(new TodoNotFoundException(1));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/1"))
+                                  .andExpect(status().isNotFound())
+                                  .andReturn();
+
+        ErrorInfo error = om.readValue(result.getResponse().getContentAsString(), ErrorInfo.class);
+
+        assertThat(error.getMessage()).isEqualTo("Todo with ID '1' not found.");
     }
 }
