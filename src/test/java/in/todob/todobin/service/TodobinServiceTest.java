@@ -53,6 +53,25 @@ public class TodobinServiceTest {
     }
 
     @Test
+    public void deleteTodo_deletesTodo_whenPassedValidTodoId() {
+        when(mockTodobinRepository.findById(1L)).thenReturn(Optional.ofNullable(Todo.builder().build()));
+
+        todobinService.deleteTodo(1L);
+
+        verify(mockTodobinRepository).deleteById(1L);
+    }
+
+    @Test
+    public void deleteTodo_throwsTodoNotFoundException_whenTodoIdForDeletionDoesNotExist() {
+        thrown.expect(TodoNotFoundException.class);
+        thrown.expectMessage("Todo with ID '1' not found.");
+
+        when(mockTodobinRepository.findById(1L)).thenReturn(Optional.empty());
+
+        todobinService.deleteTodo(1L);
+    }
+
+    @Test
     public void getTodos_retrievesPersistedTodos() {
         List<Todo> todos = Arrays.asList(
                 Todo.builder()

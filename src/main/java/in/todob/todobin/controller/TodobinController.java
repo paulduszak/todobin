@@ -43,4 +43,12 @@ public class TodobinController {
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(todo);
     }
+
+    @DeleteMapping("/todo/{id}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable("id") Long id) {
+        todobinService.deleteTodo(id);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

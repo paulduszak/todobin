@@ -33,4 +33,9 @@ public class TodobinService {
         else
             throw new TodoNotFoundException(id);
     }
+
+    public void deleteTodo(long id) {
+        if (getTodo(id) != null)
+            todobinRepository.deleteById(id);
+    }
 }

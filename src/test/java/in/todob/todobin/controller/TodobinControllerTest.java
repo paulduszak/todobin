@@ -113,7 +113,28 @@ public class TodobinControllerTest {
 
     @Test
     public void getTodo_returns404_whenPassedNonexistentTodoId() throws Exception {
+        when(mockTodobinService.getTodo(1)).thenThrow(new TodoNotFoundException(1));
 
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/1"))
+                                  .andExpect(status().isNotFound())
+                                  .andReturn();
+
+        ErrorInfo error = om.readValue(result.getResponse().getContentAsString(), ErrorInfo.class);
+
+        assertThat(error.getMessage()).isEqualTo("Todo with ID '1' not found.");
+    }
+
+    @Test
+    public void deleteTodo_returns200_whenSuccessfullyDeleteAValidTodo() throws Exception {
+
+        when(mockTodobinService.getTodo(1L)).thenReturn(Todo.builder().build());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/todo/1"))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteTodo_returns404_whenPassedNonExistentTodoIdForDeletion() throws Exception {
         when(mockTodobinService.getTodo(1)).thenThrow(new TodoNotFoundException(1));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/1"))
