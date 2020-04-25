@@ -66,6 +66,32 @@ public class TodobinControllerTest {
     }
 
     @Test
+    public void patchTodo_returns200_whenTodoPatchedSuccessfully() throws Exception {
+        Todo patch = Todo.builder()
+                        .title("Updated Title")
+                        .description("Updated Description")
+                        .build();
+
+        Todo todo = Todo.builder()
+                         .id(1L)
+                         .title("Updated Title")
+                         .description("Updated Description")
+                         .build();
+
+        when(mockTodobinService.patchTodo(1L, patch)).thenReturn(todo);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/todo/1")
+                                                                 .contentType(MediaType.APPLICATION_JSON)
+                                                                 .content(om.writeValueAsString(patch)))
+                                  .andExpect(status().isOk())
+                                  .andReturn();
+
+        Todo actual = om.readValue(result.getResponse().getContentAsString(), Todo.class);
+
+        assertThat(actual).isEqualTo(todo);
+    }
+
+    @Test
     public void getTodos_returns200withListofTodos() throws Exception {
         List<Todo> todos = Arrays.asList(
                 Todo.builder()

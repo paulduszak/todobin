@@ -30,6 +30,13 @@ public class TodobinController {
         return ResponseEntity.created(location).contentType(MediaType.APPLICATION_JSON).body(savedTodo);
     }
 
+    @PatchMapping("/todo/{id}")
+    public ResponseEntity<Todo> patchTodo(@PathVariable("id") Long id, @RequestBody Todo patch) {
+        Todo patchedTodo = todobinService.patchTodo(id, patch);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(patchedTodo);
+    }
+
     @GetMapping("/todo")
     public ResponseEntity<List<Todo>> getTodos() {
         List<Todo> todos = todobinService.getTodos();

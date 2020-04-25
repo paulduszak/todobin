@@ -109,6 +109,34 @@ public class TodobinServiceTest {
     }
 
     @Test
+    public void patchTodo_patchesTodo_whenPassedFieldsWithUpdatedValues() {
+        Todo existingTodo = Todo.builder()
+                                .id(1L)
+                                .title("A todo")
+                                .description("A todo description")
+                                .build();
+
+        Todo updatedTodo = Todo.builder()
+                               .title("An updated todo")
+                               .description("An updated todo description")
+                               .build();
+
+        Todo expected = Todo.builder()
+                            .id(1L)
+                            .title("An updated todo")
+                            .description("An updated todo description")
+                            .build();
+
+        when(mockTodobinRepository.findById(1L)).thenReturn(Optional.ofNullable(existingTodo));
+        when(mockTodobinRepository.save(expected)).thenReturn(expected);
+
+        Todo result = todobinService.patchTodo(1L, updatedTodo);
+
+        assertThat(result).isEqualTo(expected);
+        verify(mockTodobinRepository).save(expected);
+    }
+
+    @Test
     public void getTodo_throwsTodoNotFoundException_ifTodoDoesNotExist() {
         thrown.expect(TodoNotFoundException.class);
         thrown.expectMessage("Todo with ID '1' not found.");

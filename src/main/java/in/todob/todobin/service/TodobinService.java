@@ -21,6 +21,17 @@ public class TodobinService {
         return todobinRepository.save(todoRequest);
     }
 
+    public Todo patchTodo(long id, Todo patch) {
+        Todo existingTodo = getTodo(id);
+
+        if (existingTodo != null) {
+            if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());
+            if (patch.getDescription() != null) existingTodo.setDescription(patch.getDescription());
+        }
+
+        return todobinRepository.save(existingTodo);
+    }
+
     public List<Todo> getTodos() {
         return todobinRepository.findAll();
     }
