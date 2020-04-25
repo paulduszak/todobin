@@ -22,16 +22,6 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew -i clean build
-    - name: Print directory contents
-      run: |
-        ls -la
-        cd build/libs
-        ls -la
-        
-  upload:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
     - name: Upload artifact 
       uses: actions/upload-artifact@v1.0.0
       with:
