@@ -22,7 +22,7 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew -i clean build
-    - name: Upload artifact 
+    - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: todobin
