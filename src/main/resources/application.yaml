@@ -1,11 +1,4 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-
----
-
-spring:
   profiles: local
 
   datasource:
