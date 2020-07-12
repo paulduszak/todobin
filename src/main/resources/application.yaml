@@ -1,4 +1,11 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
   profiles: local
 
   datasource:
