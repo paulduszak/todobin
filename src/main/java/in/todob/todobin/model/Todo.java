@@ -1,5 +1,6 @@
 package in.todob.todobin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.todob.todobin.util.ShortIdMapper;
 import lombok.*;
 
@@ -15,6 +16,7 @@ public class Todo {
     @Id
     @Column(updatable = false, nullable = false)
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
 
     @Transient
