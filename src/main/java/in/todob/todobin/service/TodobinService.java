@@ -3,6 +3,7 @@ package in.todob.todobin.service;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
+import in.todob.todobin.util.ShortIdMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class TodobinService {
         return todobinRepository.save(todoRequest);
     }
 
-    public Todo patchTodo(long id, Todo patch) {
-        Todo existingTodo = getTodo(id);
+    public Todo patchTodo(String shortId, Todo patch) {
+        Todo existingTodo = getTodo(shortId);
 
         if (existingTodo != null) {
             if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());
@@ -33,20 +34,22 @@ public class TodobinService {
     }
 
     public List<Todo> getTodos() {
-        return todobinRepository.findAll();
+        List<Todo> todos = todobinRepository.findAll();
+
+        return todos;
     }
 
-    public Todo getTodo(long id) {
-        Optional<Todo> todo = todobinRepository.findById(id);
+    public Todo getTodo(String shortId) {
+        Optional<Todo> todo = todobinRepository.findById(ShortIdMapper.decode(shortId));
 
         if (todo.isPresent())
             return todo.get();
         else
-            throw new TodoNotFoundException(id);
+            throw new TodoNotFoundException(shortId);
     }
 
-    public void deleteTodo(long id) {
-        if (getTodo(id) != null)
-            todobinRepository.deleteById(id);
+    public void deleteTodo(String shortId) {
+        if (getTodo(shortId) != null)
+            todobinRepository.deleteById(ShortIdMapper.decode(shortId));
     }
 }

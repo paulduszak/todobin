@@ -1,9 +1,7 @@
 package in.todob.todobin.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import in.todob.todobin.util.ShortIdMapper;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,9 +17,19 @@ public class Todo {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    @Transient
+    @Getter(AccessLevel.NONE)
+    private String shortId;
+
     @NotNull
     @Column(nullable = false)
     private String title;
 
     private String description;
+
+    public String getShortId() {
+        if (this.id != null)
+            return ShortIdMapper.encode(this.getId());
+        return null;
+    }
 }

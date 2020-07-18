@@ -25,13 +25,13 @@ public class TodobinController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                                                   .path("/{id}")
-                                                  .buildAndExpand(savedTodo.getId()).toUri();
+                                                  .buildAndExpand(savedTodo.getShortId()).toUri();
 
         return ResponseEntity.created(location).contentType(MediaType.APPLICATION_JSON).body(savedTodo);
     }
 
     @PatchMapping("/todo/{id}")
-    public ResponseEntity<Todo> patchTodo(@PathVariable("id") Long id, @RequestBody Todo patch) {
+    public ResponseEntity<Todo> patchTodo(@PathVariable("id") String id, @RequestBody Todo patch) {
         Todo patchedTodo = todobinService.patchTodo(id, patch);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(patchedTodo);
@@ -45,14 +45,14 @@ public class TodobinController {
     }
 
     @GetMapping("/todo/{id}")
-    public ResponseEntity<Todo> getTodo(@PathVariable("id") Long id) {
+    public ResponseEntity<Todo> getTodo(@PathVariable("id") String id) {
         Todo todo = todobinService.getTodo(id);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(todo);
     }
 
     @DeleteMapping("/todo/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteTodo(@PathVariable("id") String id) {
         todobinService.deleteTodo(id);
 
         return ResponseEntity.ok().build();
