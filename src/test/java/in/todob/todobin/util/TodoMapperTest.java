@@ -5,7 +5,6 @@ import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
@@ -23,8 +22,8 @@ public class TodoMapperTest {
 
     @Before
     public void setUp() throws Exception {
-        todo1 = Todo.builder().id(1L).shortId("U").title("A title").description("None").build();
-        todo2 = Todo.builder().id(2L).shortId("B").title("A second title").description("None either").build();
+        todo1 = Todo.builder().id(1L).shortId("U").title("A title").notes("None").build();
+        todo2 = Todo.builder().id(2L).shortId("B").title("A second title").notes("None either").build();
 
         todos = Arrays.asList(todo1, todo2);
     }
@@ -35,7 +34,7 @@ public class TodoMapperTest {
 
         assertThat(actual.getShortId()).isEqualTo("u");
         assertThat(actual.getTitle()).isEqualTo("A title");
-        assertThat(actual.getDescription()).isEqualTo("None");
+        assertThat(actual.getNotes()).isEqualTo("None");
     }
 
     @Test
@@ -45,21 +44,21 @@ public class TodoMapperTest {
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual.get(0).getShortId()).isEqualTo("u");
         assertThat(actual.get(0).getTitle()).isEqualTo("A title");
-        assertThat(actual.get(0).getDescription()).isEqualTo("None");
+        assertThat(actual.get(0).getNotes()).isEqualTo("None");
         assertThat(actual.get(1).getShortId()).isEqualTo("B");
         assertThat(actual.get(1).getTitle()).isEqualTo("A second title");
-        assertThat(actual.get(1).getDescription()).isEqualTo("None either");
+        assertThat(actual.get(1).getNotes()).isEqualTo("None either");
     }
 
     @Test
     public void mapToTodo_returnsTodo_whenPassedTodoRequest() {
         TodoRequest todoRequest = new TodoRequest();
         todoRequest.setTitle("A title");
-        todoRequest.setDescription("None");
+        todoRequest.setNotes("None");
 
         Todo actual = TodoMapper.mapToTodo(todoRequest);
 
         assertThat(actual.getTitle()).isEqualTo("A title");
-        assertThat(actual.getDescription()).isEqualTo("None");
+        assertThat(actual.getNotes()).isEqualTo("None");
     }
 }

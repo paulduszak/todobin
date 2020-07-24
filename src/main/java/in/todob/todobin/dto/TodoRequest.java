@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class TodoRequest {
     private String title;
-    private String description;
+    private String notes;
 }

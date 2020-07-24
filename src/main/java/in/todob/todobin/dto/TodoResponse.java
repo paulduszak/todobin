@@ -8,5 +8,5 @@ import lombok.Setter;
 public class TodoResponse {
     private String shortId;
     private String title;
-    private String description;
+    private String notes;
 }

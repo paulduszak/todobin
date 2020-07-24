@@ -32,7 +32,7 @@ public class TodobinService {
 
         if (existingTodo != null) {
             if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());
-            if (patch.getDescription() != null) existingTodo.setDescription(patch.getDescription());
+            if (patch.getNotes() != null) existingTodo.setNotes(patch.getNotes());
         }
 
         return todobinRepository.save(existingTodo);

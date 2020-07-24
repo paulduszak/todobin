@@ -50,12 +50,12 @@ public class TodobinControllerTest {
     public void createTodo_returns201_whenTodoPersistedSuccessfully() throws Exception {
         TodoRequest todoRequest = new TodoRequest();
             todoRequest.setTitle("A todo");
-            todoRequest.setDescription("A todo description");
+            todoRequest.setNotes("A todo description");
 
         when(mockTodobinService.createTodo(any(TodoRequest.class))).thenReturn(Todo.builder()
                                                                                    .id(2L)
                                                                                    .title("A todo")
-                                                                                   .description("A todo description")
+                                                                                   .notes("A todo description")
                                                                                    .build());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/todo")
@@ -68,7 +68,7 @@ public class TodobinControllerTest {
 
         assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/todo/B");
         assertThat(actual.getTitle()).isEqualTo("A todo");
-        assertThat(actual.getDescription()).isEqualTo("A todo description");
+        assertThat(actual.getNotes()).isEqualTo("A todo description");
         assertThat(actual.getShortId()).isEqualTo("B");
     }
 
@@ -76,12 +76,12 @@ public class TodobinControllerTest {
     public void patchTodo_returns200_whenTodoPatchedSuccessfully() throws Exception {
         TodoRequest todoRequest = new TodoRequest();
             todoRequest.setTitle("Updated Title");
-            todoRequest.setDescription("Updated Description");
+            todoRequest.setNotes("Updated Description");
 
         Todo todo = Todo.builder()
                          .id(2L)
                          .title("Updated Title")
-                         .description("Updated Description")
+                         .notes("Updated Description")
                          .build();
 
         when(mockTodobinService.patchTodo(eq("B"), any(TodoRequest.class))).thenReturn(todo);
@@ -96,7 +96,7 @@ public class TodobinControllerTest {
 
         assertThat(actual.getShortId()).isEqualTo("B");
         assertThat(actual.getTitle()).isEqualTo("Updated Title");
-        assertThat(actual.getDescription()).isEqualTo("Updated Description");
+        assertThat(actual.getNotes()).isEqualTo("Updated Description");
     }
 
     @Test
@@ -104,11 +104,11 @@ public class TodobinControllerTest {
         List<Todo> todos = Arrays.asList(
                 Todo.builder()
                     .title("Todo 1")
-                    .description("A description")
+                    .notes("A description")
                     .build(),
                 Todo.builder()
                     .title("Todo 2")
-                    .description("A description")
+                    .notes("A description")
                     .build()
         );
 
@@ -129,7 +129,7 @@ public class TodobinControllerTest {
         Todo todo = Todo.builder()
                         .shortId("2c")
                         .title("Title")
-                        .description("Description")
+                        .notes("Description")
                         .build();
 
         when(mockTodobinService.getTodo("2c")).thenReturn(todo);

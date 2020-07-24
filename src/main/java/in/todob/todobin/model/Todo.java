@@ -26,7 +26,7 @@ public class Todo {
     @Column(nullable = false)
     private String title;
 
-    private String description;
+    private String notes;
 
     public String getShortId() {
         if (this.id != null)

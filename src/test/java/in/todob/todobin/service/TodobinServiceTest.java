@@ -43,19 +43,19 @@ public class TodobinServiceTest {
     public void createTodo_persistsTodo_whenPassedTodo() {
         TodoRequest todoRequest = new TodoRequest();
             todoRequest.setTitle("A todo");
-            todoRequest.setDescription("A todo description");
+            todoRequest.setNotes("A todo description");
 
         when(mockTodobinRepository.save(any(Todo.class))).thenReturn(Todo.builder()
                                                                          .id(1L)
                                                                          .title("A todo")
-                                                                         .description("A todo description")
+                                                                         .notes("A todo description")
                                                                          .build());
 
         Todo result = todobinService.createTodo(todoRequest);
 
         verify(mockTodobinRepository).save(TodoMapper.mapToTodo(todoRequest));
         assertThat(result.getTitle()).isEqualTo("A todo");
-        assertThat(result.getDescription()).isEqualTo("A todo description");
+        assertThat(result.getNotes()).isEqualTo("A todo description");
         assertThat(result.getShortId()).isEqualTo(ShortIdMapper.encode(result.getId()));
     }
 
@@ -82,12 +82,12 @@ public class TodobinServiceTest {
                 Todo.builder()
                     .id(1L)
                     .title("Todo 1")
-                    .description("A description")
+                    .notes("A description")
                     .build(),
                 Todo.builder()
                     .id(2L)
                     .title("Todo 1")
-                    .description("A description")
+                    .notes("A description")
                     .build()
         );
 
@@ -96,13 +96,13 @@ public class TodobinServiceTest {
                     .id(1L)
                     .shortId("u")
                     .title("Todo 1")
-                    .description("A description")
+                    .notes("A description")
                     .build(),
                 Todo.builder()
                     .id(2L)
                     .shortId("l")
                     .title("Todo 1")
-                    .description("A description")
+                    .notes("A description")
                     .build()
         );
 
@@ -119,7 +119,7 @@ public class TodobinServiceTest {
                         .id(3022L)
                         .shortId("2x")
                         .title("A todo")
-                        .description("A todo description")
+                        .notes("A todo description")
                         .build();
 
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(todo));
@@ -135,18 +135,18 @@ public class TodobinServiceTest {
                                 .id(3022L)
                                 .shortId("2x")
                                 .title("A todo")
-                                .description("A todo description")
+                                .notes("A todo description")
                                 .build();
 
         TodoRequest todoRequest = new TodoRequest();
             todoRequest.setTitle("An updated todo");
-            todoRequest.setDescription("An updated todo description");
+            todoRequest.setNotes("An updated todo description");
 
         Todo expected = Todo.builder()
                             .id(3022L)
                             .shortId("2x")
                             .title("An updated todo")
-                            .description("An updated todo description")
+                            .notes("An updated todo description")
                             .build();
 
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(existingTodo));

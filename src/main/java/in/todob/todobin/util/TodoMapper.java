@@ -23,13 +23,13 @@ public final class TodoMapper {
     private static TodoResponse mapTodoResponse(Todo todo) {
         TodoResponse todoResponse = new TodoResponse();
         todoResponse.setTitle(todo.getTitle());
-        todoResponse.setDescription(todo.getDescription());
+        todoResponse.setNotes(todo.getNotes());
         todoResponse.setShortId(todo.getShortId());
 
         return todoResponse;
     }
 
     private static Todo mapTodo(TodoRequest todoRequest) {
-        return Todo.builder().title(todoRequest.getTitle()).description(todoRequest.getDescription()).build();
+        return Todo.builder().title(todoRequest.getTitle()).notes(todoRequest.getNotes()).build();
     }
 }
