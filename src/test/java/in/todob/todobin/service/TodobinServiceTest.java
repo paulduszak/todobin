@@ -1,9 +1,11 @@
 package in.todob.todobin.service;
 
+import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import in.todob.todobin.util.ShortIdMapper;
+import in.todob.todobin.util.TodoMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,7 +41,9 @@ public class TodobinServiceTest {
 
     @Test
     public void createTodo_persistsTodo_whenPassedTodo() {
-        Todo input = Todo.builder().title("A todo").description("A todo description").build();
+        TodoRequest todoRequest = new TodoRequest();
+            todoRequest.setTitle("A todo");
+            todoRequest.setDescription("A todo description");
 
         when(mockTodobinRepository.save(any(Todo.class))).thenReturn(Todo.builder()
                                                                          .id(1L)
@@ -47,9 +51,9 @@ public class TodobinServiceTest {
                                                                          .description("A todo description")
                                                                          .build());
 
-        Todo result = todobinService.createTodo(input);
+        Todo result = todobinService.createTodo(todoRequest);
 
-        verify(mockTodobinRepository).save(input);
+        verify(mockTodobinRepository).save(TodoMapper.mapToTodo(todoRequest));
         assertThat(result.getTitle()).isEqualTo("A todo");
         assertThat(result.getDescription()).isEqualTo("A todo description");
         assertThat(result.getShortId()).isEqualTo(ShortIdMapper.encode(result.getId()));
@@ -134,10 +138,9 @@ public class TodobinServiceTest {
                                 .description("A todo description")
                                 .build();
 
-        Todo updatedTodo = Todo.builder()
-                               .title("An updated todo")
-                               .description("An updated todo description")
-                               .build();
+        TodoRequest todoRequest = new TodoRequest();
+            todoRequest.setTitle("An updated todo");
+            todoRequest.setDescription("An updated todo description");
 
         Todo expected = Todo.builder()
                             .id(3022L)
@@ -149,7 +152,7 @@ public class TodobinServiceTest {
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(existingTodo));
         when(mockTodobinRepository.save(expected)).thenReturn(expected);
 
-        Todo result = todobinService.patchTodo("2x", updatedTodo);
+        Todo result = todobinService.patchTodo("2x", todoRequest);
 
         assertThat(result).isEqualTo(expected);
         verify(mockTodobinRepository).save(expected);

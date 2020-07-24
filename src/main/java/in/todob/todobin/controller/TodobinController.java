@@ -1,7 +1,10 @@
 package in.todob.todobin.controller;
 
+import in.todob.todobin.dto.TodoRequest;
+import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
+import in.todob.todobin.util.TodoMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,35 +23,43 @@ public class TodobinController {
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo todo) {
+    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoRequest todo) {
         Todo savedTodo = todobinService.createTodo(todo);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                                                   .path("/{id}")
                                                   .buildAndExpand(savedTodo.getShortId()).toUri();
 
-        return ResponseEntity.created(location).contentType(MediaType.APPLICATION_JSON).body(savedTodo);
+        return ResponseEntity.created(location)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(TodoMapper.mapToTodoResponse(savedTodo));
     }
 
     @PatchMapping("/todo/{id}")
-    public ResponseEntity<Todo> patchTodo(@PathVariable("id") String id, @RequestBody Todo patch) {
+    public ResponseEntity<TodoResponse> patchTodo(@PathVariable("id") String id, @RequestBody TodoRequest patch) {
         Todo patchedTodo = todobinService.patchTodo(id, patch);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(patchedTodo);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(TodoMapper.mapToTodoResponse(patchedTodo));
     }
 
     @GetMapping("/todo")
-    public ResponseEntity<List<Todo>> getTodos() {
+    public ResponseEntity<List<TodoResponse>> getTodos() {
         List<Todo> todos = todobinService.getTodos();
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(todos);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(TodoMapper.mapToTodoResponseList(todos));
     }
 
     @GetMapping("/todo/{id}")
-    public ResponseEntity<Todo> getTodo(@PathVariable("id") String id) {
+    public ResponseEntity<TodoResponse> getTodo(@PathVariable("id") String id) {
         Todo todo = todobinService.getTodo(id);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(todo);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(TodoMapper.mapToTodoResponse(todo));
     }
 
     @DeleteMapping("/todo/{id}")

@@ -1,6 +1,6 @@
 package in.todob.todobin.util;
 
-public class ShortIdMapper {
+public final class ShortIdMapper {
     private static final String ALPHABET = "juBT9FtJgEqbNXCAsdcGmLkvSpW7ZDn5h46yMwP3YHQraeKfoUzRx82";
     private static final int BASE = ALPHABET.length();
 

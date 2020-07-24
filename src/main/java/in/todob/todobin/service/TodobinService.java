@@ -1,9 +1,11 @@
 package in.todob.todobin.service;
 
+import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import in.todob.todobin.util.ShortIdMapper;
+import in.todob.todobin.util.TodoMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +20,15 @@ public class TodobinService {
         this.todobinRepository = todobinRepository;
     }
 
-    public Todo createTodo(Todo todoRequest) {
-        return todobinRepository.save(todoRequest);
+    public Todo createTodo(TodoRequest todoRequest) {
+        Todo todo = TodoMapper.mapToTodo(todoRequest);
+
+        return todobinRepository.save(todo);
     }
 
-    public Todo patchTodo(String shortId, Todo patch) {
+    public Todo patchTodo(String shortId, TodoRequest todoRequest) {
         Todo existingTodo = getTodo(shortId);
+        Todo patch = TodoMapper.mapToTodo(todoRequest);
 
         if (existingTodo != null) {
             if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());

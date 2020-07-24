@@ -2,6 +2,8 @@ package in.todob.todobin.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.todob.todobin.dto.TodoRequest;
+import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.exception.ErrorInfo;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,65 +48,65 @@ public class TodobinControllerTest {
 
     @Test
     public void createTodo_returns201_whenTodoPersistedSuccessfully() throws Exception {
-        Todo input = Todo.builder().title("A todo").description("A todo description").build();
+        TodoRequest todoRequest = new TodoRequest();
+            todoRequest.setTitle("A todo");
+            todoRequest.setDescription("A todo description");
 
-        when(mockTodobinService.createTodo(any(Todo.class))).thenReturn(Todo.builder()
-                                                                            .id(3022L)
-                                                                            .title("A todo")
-                                                                            .description("A todo description")
-                                                                            .build());
+        when(mockTodobinService.createTodo(any(TodoRequest.class))).thenReturn(Todo.builder()
+                                                                                   .id(2L)
+                                                                                   .title("A todo")
+                                                                                   .description("A todo description")
+                                                                                   .build());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/todo")
                                                                  .contentType(MediaType.APPLICATION_JSON)
-                                                                 .content(om.writeValueAsString(input)))
+                                                                 .content(om.writeValueAsString(todoRequest)))
                                   .andExpect(status().isCreated())
                                   .andReturn();
 
-        Todo actual = om.readValue(result.getResponse().getContentAsString(), Todo.class);
+        TodoResponse actual = om.readValue(result.getResponse().getContentAsString(), TodoResponse.class);
 
-        assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/todo/2x");
+        assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/todo/B");
         assertThat(actual.getTitle()).isEqualTo("A todo");
         assertThat(actual.getDescription()).isEqualTo("A todo description");
-        assertThat(actual.getShortId()).isEqualTo("2x");
+        assertThat(actual.getShortId()).isEqualTo("B");
     }
 
     @Test
     public void patchTodo_returns200_whenTodoPatchedSuccessfully() throws Exception {
-        Todo patch = Todo.builder()
-                        .title("Updated Title")
-                        .description("Updated Description")
-                        .build();
+        TodoRequest todoRequest = new TodoRequest();
+            todoRequest.setTitle("Updated Title");
+            todoRequest.setDescription("Updated Description");
 
         Todo todo = Todo.builder()
-                         .id(1L)
-                         .shortId("2c")
+                         .id(2L)
                          .title("Updated Title")
                          .description("Updated Description")
                          .build();
 
-        when(mockTodobinService.patchTodo("2c", patch)).thenReturn(todo);
+        when(mockTodobinService.patchTodo(eq("B"), any(TodoRequest.class))).thenReturn(todo);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/todo/2c")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/todo/B")
                                                                  .contentType(MediaType.APPLICATION_JSON)
-                                                                 .content(om.writeValueAsString(patch)))
+                                                                 .content(om.writeValueAsString(todoRequest)))
                                   .andExpect(status().isOk())
                                   .andReturn();
 
-        Todo actual = om.readValue(result.getResponse().getContentAsString(), Todo.class);
+        TodoResponse actual = om.readValue(result.getResponse().getContentAsString(), TodoResponse.class);
 
-        assertThat(actual).isEqualTo(todo);
+        assertThat(actual.getShortId()).isEqualTo("B");
+        assertThat(actual.getTitle()).isEqualTo("Updated Title");
+        assertThat(actual.getDescription()).isEqualTo("Updated Description");
     }
 
     @Test
     public void getTodos_returns200withListofTodos() throws Exception {
         List<Todo> todos = Arrays.asList(
                 Todo.builder()
-                    .id(1L)
                     .title("Todo 1")
                     .description("A description")
                     .build(),
                 Todo.builder()
-                    .id(2L)
                     .title("Todo 2")
                     .description("A description")
                     .build()
@@ -124,7 +127,6 @@ public class TodobinControllerTest {
     @Test
     public void getTodo_returns200WithTodo_whenPassedExistingTodoId() throws Exception {
         Todo todo = Todo.builder()
-                        .id(1L)
                         .shortId("2c")
                         .title("Title")
                         .description("Description")
