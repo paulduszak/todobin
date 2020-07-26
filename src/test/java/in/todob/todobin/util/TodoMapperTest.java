@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,17 +21,21 @@ public class TodoMapperTest {
     private Todo todo2;
     private List<Todo> todos;
 
+    private TodoMapper mapper;
+
     @Before
     public void setUp() throws Exception {
         todo1 = Todo.builder().id(1L).shortId("U").title("A title").notes("None").build();
         todo2 = Todo.builder().id(2L).shortId("B").title("A second title").notes("None either").build();
 
         todos = Arrays.asList(todo1, todo2);
+
+        mapper = Mappers.getMapper(TodoMapper.class);
     }
 
     @Test
     public void mapToTodoResponse_returnTodoResponse_whenPassedTodo() {
-        TodoResponse actual = TodoMapper.mapToTodoResponse(todo1);
+        TodoResponse actual = mapper.mapTodoToTodoResponse(todo1);
 
         assertThat(actual.getShortId()).isEqualTo("u");
         assertThat(actual.getTitle()).isEqualTo("A title");
@@ -39,7 +44,7 @@ public class TodoMapperTest {
 
     @Test
     public void mapToTodoResponseList_returnsListOfTodoResponse_whenPassedListofTodo() {
-        List<TodoResponse> actual = TodoMapper.mapToTodoResponseList(todos);
+        List<TodoResponse> actual = mapper.mapTodoListToTodoResponseList(todos);
 
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual.get(0).getShortId()).isEqualTo("u");
@@ -56,7 +61,7 @@ public class TodoMapperTest {
         todoRequest.setTitle("A title");
         todoRequest.setNotes("None");
 
-        Todo actual = TodoMapper.mapToTodo(todoRequest);
+        Todo actual = mapper.mapTodoRequestToTodo(todoRequest);
 
         assertThat(actual.getTitle()).isEqualTo("A title");
         assertThat(actual.getNotes()).isEqualTo("None");

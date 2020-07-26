@@ -6,6 +6,7 @@ import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import in.todob.todobin.util.TodoMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,20 +16,22 @@ import java.util.Optional;
 public class TodobinService {
 
     private TodobinRepository todobinRepository;
+    private TodoMapper mapper;
 
     public TodobinService(TodobinRepository todobinRepository) {
         this.todobinRepository = todobinRepository;
+        mapper = Mappers.getMapper(TodoMapper.class);
     }
 
     public Todo createTodo(TodoRequest todoRequest) {
-        Todo todo = TodoMapper.mapToTodo(todoRequest);
+        Todo todo = mapper.mapTodoRequestToTodo(todoRequest);
 
         return todobinRepository.save(todo);
     }
 
     public Todo patchTodo(String shortId, TodoRequest todoRequest) {
         Todo existingTodo = getTodo(shortId);
-        Todo patch = TodoMapper.mapToTodo(todoRequest);
+        Todo patch = mapper.mapTodoRequestToTodo(todoRequest);
 
         if (existingTodo != null) {
             if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());

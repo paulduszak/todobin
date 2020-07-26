@@ -5,7 +5,6 @@ import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
 import in.todob.todobin.util.ShortIdMapper;
-import in.todob.todobin.util.TodoMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,7 +52,6 @@ public class TodobinServiceTest {
 
         Todo result = todobinService.createTodo(todoRequest);
 
-        verify(mockTodobinRepository).save(TodoMapper.mapToTodo(todoRequest));
         assertThat(result.getTitle()).isEqualTo("A todo");
         assertThat(result.getNotes()).isEqualTo("A todo description");
         assertThat(result.getShortId()).isEqualTo(ShortIdMapper.encode(result.getId()));

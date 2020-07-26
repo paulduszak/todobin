@@ -5,6 +5,7 @@ import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
 import in.todob.todobin.util.TodoMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +18,11 @@ import java.util.List;
 public class TodobinController {
 
     private TodobinService todobinService;
+    private TodoMapper todoMapper;
 
-    public TodobinController(TodobinService todobinService) {
+    public TodobinController(TodobinService todobinService, TodoMapper todoMapper) {
         this.todobinService = todobinService;
+        this.todoMapper = todoMapper;
     }
 
     @PostMapping("/todo")
@@ -32,7 +35,7 @@ public class TodobinController {
 
         return ResponseEntity.created(location)
                              .contentType(MediaType.APPLICATION_JSON)
-                             .body(TodoMapper.mapToTodoResponse(savedTodo));
+                             .body(todoMapper.mapTodoToTodoResponse(savedTodo));
     }
 
     @PatchMapping("/todo/{id}")
@@ -41,7 +44,7 @@ public class TodobinController {
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
-                             .body(TodoMapper.mapToTodoResponse(patchedTodo));
+                             .body(todoMapper.mapTodoToTodoResponse(patchedTodo));
     }
 
     @GetMapping("/todo")
@@ -50,7 +53,7 @@ public class TodobinController {
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
-                             .body(TodoMapper.mapToTodoResponseList(todos));
+                             .body(todoMapper.mapTodoListToTodoResponseList(todos));
     }
 
     @GetMapping("/todo/{id}")
@@ -59,7 +62,7 @@ public class TodobinController {
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
-                             .body(TodoMapper.mapToTodoResponse(todo));
+                             .body(todoMapper.mapTodoToTodoResponse(todo));
     }
 
     @DeleteMapping("/todo/{id}")

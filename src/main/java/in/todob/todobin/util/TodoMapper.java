@@ -3,33 +3,16 @@ package in.todob.todobin.util;
 import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
+import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public final class TodoMapper {
-    public static TodoResponse mapToTodoResponse(Todo todo) {
-        return mapTodoResponse(todo);
-    }
+@Mapper(componentModel = "spring")
+public interface TodoMapper {
+    TodoResponse mapTodoToTodoResponse(Todo todo);
 
-    public static List<TodoResponse> mapToTodoResponseList(List<Todo> todos) {
-        return todos.stream().map(TodoMapper::mapTodoResponse).collect(Collectors.toList());
-    }
+    Todo mapTodoRequestToTodo(TodoRequest todoRequest);
 
-    public static Todo mapToTodo(TodoRequest todoRequest) {
-        return mapTodo(todoRequest);
-    }
-
-    private static TodoResponse mapTodoResponse(Todo todo) {
-        TodoResponse todoResponse = new TodoResponse();
-        todoResponse.setTitle(todo.getTitle());
-        todoResponse.setNotes(todo.getNotes());
-        todoResponse.setShortId(todo.getShortId());
-
-        return todoResponse;
-    }
-
-    private static Todo mapTodo(TodoRequest todoRequest) {
-        return Todo.builder().title(todoRequest.getTitle()).notes(todoRequest.getNotes()).build();
-    }
+    List<TodoResponse> mapTodoListToTodoResponseList(List<Todo> todos);
 }
