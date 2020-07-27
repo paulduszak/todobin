@@ -36,6 +36,7 @@ public class TodobinService {
         if (existingTodo != null) {
             if (patch.getTitle() != null) existingTodo.setTitle(patch.getTitle());
             if (patch.getNotes() != null) existingTodo.setNotes(patch.getNotes());
+            existingTodo.setStatus(patch.isStatus());
         }
 
         return todobinRepository.save(existingTodo);

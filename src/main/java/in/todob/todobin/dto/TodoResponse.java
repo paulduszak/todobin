@@ -11,5 +11,5 @@ public class TodoResponse {
     private String shortId;
     private String title;
     private String notes;
-    //private boolean status;
+    private boolean status;
 }

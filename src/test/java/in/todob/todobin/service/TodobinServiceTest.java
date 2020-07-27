@@ -134,17 +134,20 @@ public class TodobinServiceTest {
                                 .shortId("2x")
                                 .title("A todo")
                                 .notes("A todo description")
+                                .status(false)
                                 .build();
 
         TodoRequest todoRequest = new TodoRequest();
             todoRequest.setTitle("An updated todo");
             todoRequest.setNotes("An updated todo description");
+            todoRequest.setStatus(true);
 
         Todo expected = Todo.builder()
                             .id(3022L)
                             .shortId("2x")
                             .title("An updated todo")
                             .notes("An updated todo description")
+                            .status(true)
                             .build();
 
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(existingTodo));

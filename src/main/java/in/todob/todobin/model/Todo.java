@@ -28,7 +28,7 @@ public class Todo {
 
     private String notes;
 
-    //private boolean status = false;
+    private boolean status = false;
 
     public String getShortId() {
         if (this.id != null)

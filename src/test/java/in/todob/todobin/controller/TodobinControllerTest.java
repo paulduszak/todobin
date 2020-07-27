@@ -66,6 +66,7 @@ public class TodobinControllerTest {
             todoResponse.setShortId("B");
             todoResponse.setTitle("A todo");
             todoResponse.setNotes("A todo description");
+            todoResponse.setStatus(false);
 
         when(mockTodobinService.createTodo(any(TodoRequest.class))).thenReturn(todo);
 
@@ -99,6 +100,7 @@ public class TodobinControllerTest {
             todoResponse.setShortId("B");
             todoResponse.setTitle("Updated Title");
             todoResponse.setNotes("Updated Description");
+            todoResponse.setStatus(true);
 
         when(mockTodobinService.patchTodo(eq("B"), any(TodoRequest.class))).thenReturn(todo);
         when(mockTodoMapper.mapTodoToTodoResponse(eq(todo))).thenReturn(todoResponse);
@@ -133,11 +135,13 @@ public class TodobinControllerTest {
         todoResponse1.setShortId("j");
         todoResponse1.setTitle("Todo 1");
         todoResponse1.setNotes("A description");
+        todoResponse1.setStatus(false);
 
         TodoResponse todoResponse2 = new TodoResponse();
         todoResponse2.setShortId("u");
         todoResponse2.setTitle("Todo 2");
         todoResponse2.setNotes("A description");
+        todoResponse2.setStatus(false);
 
         List<TodoResponse> todoResponses = Arrays.asList(todoResponse1, todoResponse2);
 
@@ -160,12 +164,20 @@ public class TodobinControllerTest {
                         .shortId("2c")
                         .title("Title")
                         .notes("Description")
+                        .status(true)
                         .build();
 
         TodoResponse todoResponse = new TodoResponse();
             todoResponse.setShortId("2c");
             todoResponse.setTitle("Title");
             todoResponse.setNotes("Description");
+            todoResponse.setStatus(true);
+
+        TodoResponse expectedTodoResponse = new TodoResponse();
+            expectedTodoResponse.setShortId("2c");
+            expectedTodoResponse.setTitle("Title");
+            expectedTodoResponse.setNotes("Description");
+            expectedTodoResponse.setStatus(true);
 
         when(mockTodobinService.getTodo("2c")).thenReturn(todo);
         when(mockTodoMapper.mapTodoToTodoResponse(eq(todo))).thenReturn(todoResponse);
@@ -174,9 +186,9 @@ public class TodobinControllerTest {
                                   .andExpect(status().isOk())
                                   .andReturn();
 
-        Todo actual = om.readValue(result.getResponse().getContentAsString(), Todo.class);
+        TodoResponse actual = om.readValue(result.getResponse().getContentAsString(), TodoResponse.class);
 
-        assertThat(actual).isEqualTo(todo);
+        assertThat(actual).isEqualTo(expectedTodoResponse);
     }
 
     @Test
