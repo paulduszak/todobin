@@ -1,6 +1,7 @@
 package in.todob.todobin.service;
 
 import in.todob.todobin.dto.TodoRequest;
+import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
@@ -160,10 +161,28 @@ public class TodobinServiceTest {
     }
 
     @Test
+    public void createTodo_throwsInvalidRequest_whenTodoRequestBodyMissingRequiredFields() {
+        thrown.expect(BadRequest.class);
+        thrown.expectMessage("Request body malformed.");
+
+        TodoRequest todoRequest = new TodoRequest();
+
+        todobinService.createTodo(todoRequest);
+    }
+
+    @Test
     public void getTodo_throwsTodoNotFoundException_ifTodoDoesNotExist() {
         thrown.expect(TodoNotFoundException.class);
         thrown.expectMessage("Todo with ID '3c' not found.");
 
         todobinService.getTodo("3c");
+    }
+
+    @Test
+    public void patchTodo_throwsTodoNotFoundException_ifTodoDoesNotExist() {
+        thrown.expect(TodoNotFoundException.class);
+        thrown.expectMessage("Todo with ID '5c' not found.");
+
+        todobinService.patchTodo("5c", new TodoRequest());
     }
 }

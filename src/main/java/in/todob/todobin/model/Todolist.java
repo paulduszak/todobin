@@ -1,17 +1,24 @@
 package in.todob.todobin.model;
 
+import in.todob.todobin.dto.TodoRequest;
+import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.util.ShortIdMapper;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Todo {
+public class Todolist {
     @Id
     @Column(updatable = false, nullable = false)
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -20,17 +27,14 @@ public class Todo {
     @Transient
     private String shortId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    @JoinColumn(name = "todolist_id", nullable = false)
-    private Todolist todolist;
-
     @NotNull
     @Column(nullable = false)
     private String title;
 
     private String notes;
 
-    private boolean status = false;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="todolist", cascade = {CascadeType.ALL})
+    private List<Todo> todos;
 
     public String getShortId() {
         if (this.id != null)

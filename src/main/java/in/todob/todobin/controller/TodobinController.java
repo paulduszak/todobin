@@ -26,8 +26,8 @@ public class TodobinController {
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoRequest todo) {
-        Todo savedTodo = todobinService.createTodo(todo);
+    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoRequest todoRequest) {
+        Todo savedTodo = todobinService.createTodo(todoRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                                                   .path("/{id}")

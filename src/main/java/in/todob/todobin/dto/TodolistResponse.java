@@ -1,17 +1,17 @@
 package in.todob.todobin.dto;
 
-import in.todob.todobin.model.Todo;
-import in.todob.todobin.model.Todolist;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @EqualsAndHashCode
-public class TodoRequest {
+public class TodolistResponse {
+    private String shortId;
     private String title;
     private String notes;
-    private boolean status;
-    private Todolist todolist;
+    private List<TodoResponse> todos;
 }

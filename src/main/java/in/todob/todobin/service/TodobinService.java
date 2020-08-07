@@ -1,6 +1,8 @@
 package in.todob.todobin.service;
 
 import in.todob.todobin.dto.TodoRequest;
+
+import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.repository.TodobinRepository;
@@ -24,9 +26,10 @@ public class TodobinService {
     }
 
     public Todo createTodo(TodoRequest todoRequest) {
-        Todo todo = mapper.mapTodoRequestToTodo(todoRequest);
+        if (todoRequest == null || todoRequest.getTitle() == null)
+            throw new BadRequest();
 
-        return todobinRepository.save(todo);
+        return todobinRepository.save(mapper.mapTodoRequestToTodo(todoRequest));
     }
 
     public Todo patchTodo(String shortId, TodoRequest todoRequest) {

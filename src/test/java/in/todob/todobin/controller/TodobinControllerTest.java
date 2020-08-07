@@ -8,7 +8,9 @@ import in.todob.todobin.exception.ErrorInfo;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
+import in.todob.todobin.service.TodolistService;
 import in.todob.todobin.util.TodoMapper;
+import in.todob.todobin.util.TodolistMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +41,12 @@ public class TodobinControllerTest {
 
     @MockBean
     private TodoMapper mockTodoMapper;
+
+    @MockBean
+    private TodolistService mockTodolistService;
+
+    @MockBean
+    private TodolistMapper mockTodolistMapper;
 
     @Autowired
     private MockMvc mockMvc;
