@@ -4,6 +4,7 @@ import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
+import in.todob.todobin.model.Todolist;
 import in.todob.todobin.repository.TodobinRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import org.junit.Before;
@@ -15,11 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,11 +33,19 @@ public class TodobinServiceTest {
     @Mock
     private TodobinRepository mockTodobinRepository;
 
+    @Mock
+    private TodolistService mockTodolistService;
+
     private TodobinService todobinService;
 
     @Before
     public void setup() {
-        todobinService = new TodobinService(mockTodobinRepository);
+        todobinService = new TodobinService(mockTodobinRepository, mockTodolistService);
+
+        when(mockTodolistService.getTodolist(eq("u")))
+                .thenReturn(Todolist.builder()
+                                    .todos(Arrays.asList(Todo.builder().id(3022L).build()))
+                                    .build());
     }
 
     @Test
@@ -51,7 +60,7 @@ public class TodobinServiceTest {
                                                                          .notes("A todo description")
                                                                          .build());
 
-        Todo result = todobinService.createTodo(todoRequest);
+        Todo result = todobinService.createTodo("u", todoRequest);
 
         assertThat(result.getTitle()).isEqualTo("A todo");
         assertThat(result.getNotes()).isEqualTo("A todo description");
@@ -62,7 +71,7 @@ public class TodobinServiceTest {
     public void deleteTodo_deletesTodo_whenPassedValidTodoId() {
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(Todo.builder().build()));
 
-        todobinService.deleteTodo("2x");
+        todobinService.deleteTodo("u", "2x");
 
         verify(mockTodobinRepository).deleteById(3022L);
     }
@@ -72,44 +81,7 @@ public class TodobinServiceTest {
         thrown.expect(TodoNotFoundException.class);
         thrown.expectMessage("Todo with ID '4c' not found.");
 
-        todobinService.deleteTodo("4c");
-    }
-
-    @Test
-    public void getTodos_retrievesPersistedTodos() {
-        List<Todo> todos = Arrays.asList(
-                Todo.builder()
-                    .id(1L)
-                    .title("Todo 1")
-                    .notes("A description")
-                    .build(),
-                Todo.builder()
-                    .id(2L)
-                    .title("Todo 1")
-                    .notes("A description")
-                    .build()
-        );
-
-        List<Todo> expected = Arrays.asList(
-                Todo.builder()
-                    .id(1L)
-                    .shortId("u")
-                    .title("Todo 1")
-                    .notes("A description")
-                    .build(),
-                Todo.builder()
-                    .id(2L)
-                    .shortId("l")
-                    .title("Todo 1")
-                    .notes("A description")
-                    .build()
-        );
-
-        when(mockTodobinRepository.findAll()).thenReturn(todos);
-
-        List<Todo> result = todobinService.getTodos();
-
-        assertThat(result).isEqualTo(expected);
+        todobinService.deleteTodo("u", "4c");
     }
 
     @Test
@@ -123,7 +95,7 @@ public class TodobinServiceTest {
 
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(todo));
 
-        Todo result = todobinService.getTodo("2x");
+        Todo result = todobinService.getTodo("u", "2x");
 
         assertThat(result).isEqualTo(todo);
     }
@@ -154,7 +126,7 @@ public class TodobinServiceTest {
         when(mockTodobinRepository.findById(3022L)).thenReturn(Optional.ofNullable(existingTodo));
         when(mockTodobinRepository.save(expected)).thenReturn(expected);
 
-        Todo result = todobinService.patchTodo("2x", todoRequest);
+        Todo result = todobinService.patchTodo("u", "2x", todoRequest);
 
         assertThat(result).isEqualTo(expected);
         verify(mockTodobinRepository).save(expected);
@@ -167,7 +139,7 @@ public class TodobinServiceTest {
 
         TodoRequest todoRequest = new TodoRequest();
 
-        todobinService.createTodo(todoRequest);
+        todobinService.createTodo("u", todoRequest);
     }
 
     @Test
@@ -175,7 +147,7 @@ public class TodobinServiceTest {
         thrown.expect(TodoNotFoundException.class);
         thrown.expectMessage("Todo with ID '3c' not found.");
 
-        todobinService.getTodo("3c");
+        todobinService.getTodo("u", "3c");
     }
 
     @Test
@@ -183,6 +155,6 @@ public class TodobinServiceTest {
         thrown.expect(TodoNotFoundException.class);
         thrown.expectMessage("Todo with ID '5c' not found.");
 
-        todobinService.patchTodo("5c", new TodoRequest());
+        todobinService.patchTodo("u","5c", new TodoRequest());
     }
 }

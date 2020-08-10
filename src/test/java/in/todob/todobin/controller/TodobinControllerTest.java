@@ -76,11 +76,11 @@ public class TodobinControllerTest {
             todoResponse.setNotes("A todo description");
             todoResponse.setStatus(false);
 
-        when(mockTodobinService.createTodo(any(TodoRequest.class))).thenReturn(todo);
+        when(mockTodobinService.createTodo(eq("u"), any(TodoRequest.class))).thenReturn(todo);
 
         when(mockTodoMapper.mapTodoToTodoResponse(eq(todo))).thenReturn(todoResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/todo")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/list/u/todo")
                                                                  .contentType(MediaType.APPLICATION_JSON)
                                                                  .content(om.writeValueAsString(todoRequest)))
                                   .andExpect(status().isCreated())
@@ -88,7 +88,7 @@ public class TodobinControllerTest {
 
         TodoResponse actual = om.readValue(result.getResponse().getContentAsString(), TodoResponse.class);
 
-        assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/todo/B");
+        assertThat(result.getResponse().getHeader("Location")).isEqualTo("http://localhost/api/v1/list/u/todo/B");
         assertThat(actual).isEqualTo(todoResponse);
     }
 
@@ -110,10 +110,10 @@ public class TodobinControllerTest {
             todoResponse.setNotes("Updated Description");
             todoResponse.setStatus(true);
 
-        when(mockTodobinService.patchTodo(eq("B"), any(TodoRequest.class))).thenReturn(todo);
+        when(mockTodobinService.patchTodo(eq("u"), eq("B"), any(TodoRequest.class))).thenReturn(todo);
         when(mockTodoMapper.mapTodoToTodoResponse(eq(todo))).thenReturn(todoResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/todo/B")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/list/u/todo/B")
                                                                  .contentType(MediaType.APPLICATION_JSON)
                                                                  .content(om.writeValueAsString(todoRequest)))
                                   .andExpect(status().isOk())
@@ -122,48 +122,6 @@ public class TodobinControllerTest {
         TodoResponse actual = om.readValue(result.getResponse().getContentAsString(), TodoResponse.class);
 
         assertThat(actual).isEqualTo(todoResponse);
-    }
-
-    @Test
-    public void getTodos_returns200withListofTodos() throws Exception {
-        List<Todo> todos = Arrays.asList(
-                Todo.builder()
-                    .id(1L)
-                    .title("Todo 1")
-                    .notes("A description")
-                    .build(),
-                Todo.builder()
-                    .id(2L)
-                    .title("Todo 2")
-                    .notes("A description")
-                    .build()
-        );
-
-        TodoResponse todoResponse1 = new TodoResponse();
-        todoResponse1.setShortId("j");
-        todoResponse1.setTitle("Todo 1");
-        todoResponse1.setNotes("A description");
-        todoResponse1.setStatus(false);
-
-        TodoResponse todoResponse2 = new TodoResponse();
-        todoResponse2.setShortId("u");
-        todoResponse2.setTitle("Todo 2");
-        todoResponse2.setNotes("A description");
-        todoResponse2.setStatus(false);
-
-        List<TodoResponse> todoResponses = Arrays.asList(todoResponse1, todoResponse2);
-
-        when(mockTodobinService.getTodos()).thenReturn(todos);
-
-        when(mockTodoMapper.mapTodoListToTodoResponseList(eq(todos))).thenReturn(todoResponses);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo"))
-                                  .andExpect(status().isOk())
-                                  .andReturn();
-
-        List<TodoResponse> actual = om.readValue(result.getResponse().getContentAsString(), new TypeReference<List<TodoResponse>>() {});
-
-        assertThat(actual).isEqualTo(todoResponses);
     }
 
     @Test
@@ -187,10 +145,10 @@ public class TodobinControllerTest {
             expectedTodoResponse.setNotes("Description");
             expectedTodoResponse.setStatus(true);
 
-        when(mockTodobinService.getTodo("2c")).thenReturn(todo);
+        when(mockTodobinService.getTodo("u", "2c")).thenReturn(todo);
         when(mockTodoMapper.mapTodoToTodoResponse(eq(todo))).thenReturn(todoResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/2c"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list/u/todo/2c"))
                                   .andExpect(status().isOk())
                                   .andReturn();
 
@@ -201,9 +159,9 @@ public class TodobinControllerTest {
 
     @Test
     public void getTodo_returns404_whenPassedNonexistentTodoId() throws Exception {
-        when(mockTodobinService.getTodo("j4")).thenThrow(new TodoNotFoundException("j4"));
+        when(mockTodobinService.getTodo("u", "j4")).thenThrow(new TodoNotFoundException("j4"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/j4"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list/u/todo/j4"))
                                   .andExpect(status().isNotFound())
                                   .andReturn();
 
@@ -215,17 +173,17 @@ public class TodobinControllerTest {
     @Test
     public void deleteTodo_returns200_whenSuccessfullyDeleteAValidTodo() throws Exception {
 
-        when(mockTodobinService.getTodo("j4")).thenReturn(Todo.builder().build());
+        when(mockTodobinService.getTodo("u", "j4")).thenReturn(Todo.builder().build());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/todo/j4"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/list/u/todo/j4"))
                .andExpect(status().isOk());
     }
 
     @Test
     public void deleteTodo_returns404_whenPassedNonExistentTodoIdForDeletion() throws Exception {
-        when(mockTodobinService.getTodo("k4")).thenThrow(new TodoNotFoundException("k4"));
+        when(mockTodobinService.getTodo("u", "k4")).thenThrow(new TodoNotFoundException("k4"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/todo/k4"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list/u/todo/k4"))
                                   .andExpect(status().isNotFound())
                                   .andReturn();
 

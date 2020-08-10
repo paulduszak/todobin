@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/list")
 public class TodolistController {
 
     private TodolistService todolistService;
@@ -24,12 +25,12 @@ public class TodolistController {
         this.todolistMapper = todolistMapper;
     }
 
-    @PostMapping("/list")
+    @PostMapping
     public ResponseEntity<TodolistResponse> createTodolist(@RequestBody TodolistRequest todolist) {
         Todolist savedTodolist = todolistService.createTodolist(todolist);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                                                  .path("/{id}")
+                                                  .path("/{listId}")
                                                   .buildAndExpand(savedTodolist.getShortId()).toUri();
 
         return ResponseEntity.created(location)
@@ -37,16 +38,16 @@ public class TodolistController {
                              .body(todolistMapper.mapTodolistToTodolistResponse(savedTodolist));
     }
 
-    @PatchMapping("/list/{id}")
-    public ResponseEntity<TodolistResponse> patchTodolist(@PathVariable("id") String id, @RequestBody TodolistRequest patch) {
-        Todolist patchedTodolist = todolistService.patchTodolist(id, patch);
+    @PatchMapping("/{listId}")
+    public ResponseEntity<TodolistResponse> patchTodolist(@PathVariable("listId") String listId, @RequestBody TodolistRequest patch) {
+        Todolist patchedTodolist = todolistService.patchTodolist(listId, patch);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(todolistMapper.mapTodolistToTodolistResponse(patchedTodolist));
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<TodolistResponse>> getTodolists() {
         List<Todolist> todolists = todolistService.getTodolists();
 
@@ -55,18 +56,18 @@ public class TodolistController {
                              .body(todolistMapper.mapTodolistListToTodolistResponseList(todolists));
     }
 
-    @GetMapping("/list/{id}")
-    public ResponseEntity<TodolistResponse> getTodolist(@PathVariable("id") String id) {
-        Todolist todolist = todolistService.getTodolist(id);
+    @GetMapping("/{listId}")
+    public ResponseEntity<TodolistResponse> getTodolist(@PathVariable("listId") String listId) {
+        Todolist todolist = todolistService.getTodolist(listId);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(todolistMapper.mapTodolistToTodolistResponse(todolist));
     }
 
-    @DeleteMapping("/list/{id}")
-    public ResponseEntity<Void> deleteTodolist(@PathVariable("id") String id) {
-        todolistService.deleteTodolist(id);
+    @DeleteMapping("/{listId}")
+    public ResponseEntity<Void> deleteTodolist(@PathVariable("listId") String listId) {
+        todolistService.deleteTodolist(listId);
 
         return ResponseEntity.ok().build();
     }

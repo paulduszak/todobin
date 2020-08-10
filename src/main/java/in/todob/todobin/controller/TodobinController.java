@@ -5,7 +5,6 @@ import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodobinService;
 import in.todob.todobin.util.TodoMapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/list/{listId}/todo")
 public class TodobinController {
 
     private TodobinService todobinService;
@@ -25,12 +25,12 @@ public class TodobinController {
         this.todoMapper = todoMapper;
     }
 
-    @PostMapping("/todo")
-    public ResponseEntity<TodoResponse> createTodo(@RequestBody TodoRequest todoRequest) {
-        Todo savedTodo = todobinService.createTodo(todoRequest);
+    @PostMapping
+    public ResponseEntity<TodoResponse> createTodo(@PathVariable("listId") String listId, @RequestBody TodoRequest todoRequest) {
+        Todo savedTodo = todobinService.createTodo(listId, todoRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                                                  .path("/{id}")
+                                                  .path("/{todoId}")
                                                   .buildAndExpand(savedTodo.getShortId()).toUri();
 
         return ResponseEntity.created(location)
@@ -38,36 +38,27 @@ public class TodobinController {
                              .body(todoMapper.mapTodoToTodoResponse(savedTodo));
     }
 
-    @PatchMapping("/todo/{id}")
-    public ResponseEntity<TodoResponse> patchTodo(@PathVariable("id") String id, @RequestBody TodoRequest patch) {
-        Todo patchedTodo = todobinService.patchTodo(id, patch);
+    @PatchMapping("/{todoId}")
+    public ResponseEntity<TodoResponse> patchTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId, @RequestBody TodoRequest patch) {
+        Todo patchedTodo = todobinService.patchTodo(listId, todoId, patch);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(todoMapper.mapTodoToTodoResponse(patchedTodo));
     }
 
-    @GetMapping("/todo")
-    public ResponseEntity<List<TodoResponse>> getTodos() {
-        List<Todo> todos = todobinService.getTodos();
-
-        return ResponseEntity.ok()
-                             .contentType(MediaType.APPLICATION_JSON)
-                             .body(todoMapper.mapTodoListToTodoResponseList(todos));
-    }
-
-    @GetMapping("/todo/{id}")
-    public ResponseEntity<TodoResponse> getTodo(@PathVariable("id") String id) {
-        Todo todo = todobinService.getTodo(id);
+    @GetMapping("/{todoId}")
+    public ResponseEntity<TodoResponse> getTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId) {
+        Todo todo = todobinService.getTodo(listId, todoId);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(todoMapper.mapTodoToTodoResponse(todo));
     }
 
-    @DeleteMapping("/todo/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable("id") String id) {
-        todobinService.deleteTodo(id);
+    @DeleteMapping("/{todoId}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId) {
+        todobinService.deleteTodo(listId, todoId);
 
         return ResponseEntity.ok().build();
     }

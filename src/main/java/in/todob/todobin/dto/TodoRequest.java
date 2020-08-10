@@ -13,5 +13,4 @@ public class TodoRequest {
     private String title;
     private String notes;
     private boolean status;
-    private Todolist todolist;
 }

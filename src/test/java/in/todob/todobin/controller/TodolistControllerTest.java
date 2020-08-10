@@ -72,7 +72,7 @@ public class TodolistControllerTest {
         when(mockTodolistService.createTodolist(any(TodolistRequest.class))).thenReturn(Todolist.builder().build());
         when(mockTodolistMapper.mapTodolistToTodolistResponse(any(Todolist.class))).thenReturn(new TodolistResponse());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/list")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/list")
                                               .contentType(MediaType.APPLICATION_JSON)
                                               .content(om.writeValueAsString(todolistRequest)))
                .andExpect(status().isCreated())
@@ -88,7 +88,7 @@ public class TodolistControllerTest {
         when(mockTodolistService.patchTodolist(eq("2"), any(TodolistRequest.class))).thenReturn(Todolist.builder().build());
         when(mockTodolistMapper.mapTodolistToTodolistResponse(any(Todolist.class))).thenReturn(new TodolistResponse());
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/list/2")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/list/2")
                                               .contentType(MediaType.APPLICATION_JSON)
                                               .content(om.writeValueAsString(todolistRequest)))
                .andExpect(status().isOk())
@@ -101,7 +101,7 @@ public class TodolistControllerTest {
         when(mockTodolistService.getTodolists()).thenReturn(asList(Todolist.builder().build(), Todolist.builder().build()));
         when(mockTodolistMapper.mapTodolistListToTodolistResponseList(any(List.class))).thenReturn(asList(new TodolistResponse(), new TodolistResponse()));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/list")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list")
                                               .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                .andReturn();
@@ -113,7 +113,7 @@ public class TodolistControllerTest {
         when(mockTodolistService.getTodolist("u")).thenReturn((Todolist.builder().build()));
         when(mockTodolistMapper.mapTodolistToTodolistResponse(any(Todolist.class))).thenReturn(new TodolistResponse());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/list")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list")
                                               .contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                .andReturn();
@@ -123,7 +123,7 @@ public class TodolistControllerTest {
     public void getTodolist_returns404_whenPassedNonexistentTodolistId() throws Exception {
         when(mockTodolistService.getTodolist("j4")).thenThrow(new TodolistNotFoundException("j4"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/list/j4"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list/j4"))
                                   .andExpect(status().isNotFound())
                                   .andReturn();
 
@@ -134,7 +134,7 @@ public class TodolistControllerTest {
 
     @Test
     public void deleteTodolist_returns200_whenSuccessfullyDeleteAValidTodolist() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/todo/j4"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/list/j4"))
                .andExpect(status().isOk());
     }
 
@@ -142,7 +142,7 @@ public class TodolistControllerTest {
     public void deleteTodo_returns404_whenPassedNonExistentTodolistIdForDeletion() throws Exception {
         when(mockTodolistService.getTodolist("k4")).thenThrow(new TodolistNotFoundException("k4"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/list/k4"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list/k4"))
                                   .andExpect(status().isNotFound())
                                   .andReturn();
 
