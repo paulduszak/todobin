@@ -2,7 +2,6 @@ package in.todob.todobin.service;
 
 import in.todob.todobin.dto.TodolistRequest;
 import in.todob.todobin.exception.BadRequest;
-import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.exception.TodolistNotFoundException;
 import in.todob.todobin.model.Todolist;
 import in.todob.todobin.repository.TodolistRepository;

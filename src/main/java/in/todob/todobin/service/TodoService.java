@@ -6,7 +6,7 @@ import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.model.Todolist;
-import in.todob.todobin.repository.TodobinRepository;
+import in.todob.todobin.repository.TodoRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import in.todob.todobin.util.TodoMapper;
 import org.mapstruct.factory.Mappers;
@@ -17,14 +17,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TodobinService {
+public class TodoService {
 
-    private TodobinRepository todobinRepository;
+    private TodoRepository todoRepository;
     private TodolistService todolistService;
     private TodoMapper mapper;
 
-    public TodobinService(TodobinRepository todobinRepository, TodolistService todolistService) {
-        this.todobinRepository = todobinRepository;
+    public TodoService(TodoRepository todoRepository, TodolistService todolistService) {
+        this.todoRepository = todoRepository;
         this.todolistService = todolistService;
         mapper = Mappers.getMapper(TodoMapper.class);
     }
@@ -38,7 +38,7 @@ public class TodobinService {
 
         todo.setTodolist(todolist);
 
-        return todobinRepository.save(todo);
+        return todoRepository.save(todo);
     }
 
     public Todo patchTodo(String listId, String todoId, TodoRequest todoRequest) {
@@ -51,13 +51,13 @@ public class TodobinService {
             existingTodo.setStatus(patch.isStatus());
         }
 
-        return todobinRepository.save(existingTodo);
+        return todoRepository.save(existingTodo);
     }
 
     public Todo getTodo(String listId, String todoId) {
         validateTodoBelongsToTodolist(listId, todoId);
 
-        Optional<Todo> todo = todobinRepository.findById(ShortIdMapper.decode(todoId));
+        Optional<Todo> todo = todoRepository.findById(ShortIdMapper.decode(todoId));
 
         if (todo.isPresent())
             return todo.get();
@@ -67,7 +67,7 @@ public class TodobinService {
 
     public void deleteTodo(String listId, String todoId) {
         if (getTodo(listId, todoId) != null)
-            todobinRepository.deleteById(ShortIdMapper.decode(todoId));
+            todoRepository.deleteById(ShortIdMapper.decode(todoId));
     }
 
     private void validateTodoBelongsToTodolist(String listId, String todoId) {

@@ -3,7 +3,7 @@ package in.todob.todobin.controller;
 import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.model.Todo;
-import in.todob.todobin.service.TodobinService;
+import in.todob.todobin.service.TodoService;
 import in.todob.todobin.util.TodoMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,23 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/list/{listId}/todo")
-public class TodobinController {
+public class TodoController {
 
-    private TodobinService todobinService;
+    private TodoService todoService;
     private TodoMapper todoMapper;
 
-    public TodobinController(TodobinService todobinService, TodoMapper todoMapper) {
-        this.todobinService = todobinService;
+    public TodoController(TodoService todoService, TodoMapper todoMapper) {
+        this.todoService = todoService;
         this.todoMapper = todoMapper;
     }
 
     @PostMapping
     public ResponseEntity<TodoResponse> createTodo(@PathVariable("listId") String listId, @RequestBody TodoRequest todoRequest) {
-        Todo savedTodo = todobinService.createTodo(listId, todoRequest);
+        Todo savedTodo = todoService.createTodo(listId, todoRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                                                   .path("/{todoId}")
@@ -40,7 +39,7 @@ public class TodobinController {
 
     @PatchMapping("/{todoId}")
     public ResponseEntity<TodoResponse> patchTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId, @RequestBody TodoRequest patch) {
-        Todo patchedTodo = todobinService.patchTodo(listId, todoId, patch);
+        Todo patchedTodo = todoService.patchTodo(listId, todoId, patch);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +48,7 @@ public class TodobinController {
 
     @GetMapping("/{todoId}")
     public ResponseEntity<TodoResponse> getTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId) {
-        Todo todo = todobinService.getTodo(listId, todoId);
+        Todo todo = todoService.getTodo(listId, todoId);
 
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +57,7 @@ public class TodobinController {
 
     @DeleteMapping("/{todoId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable("listId") String listId, @PathVariable("todoId") String todoId) {
-        todobinService.deleteTodo(listId, todoId);
+        todoService.deleteTodo(listId, todoId);
 
         return ResponseEntity.ok().build();
     }
