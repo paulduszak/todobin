@@ -4,23 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.exception.ErrorInfo;
+import in.todob.todobin.exception.RestExceptionHandler;
 import in.todob.todobin.exception.TodoNotFoundException;
 import in.todob.todobin.model.Todo;
 import in.todob.todobin.service.TodoService;
-import in.todob.todobin.service.TodolistService;
 import in.todob.todobin.util.TodoMapper;
 import in.todob.todobin.util.TodolistMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,30 +29,32 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TodoControllerTest {
 
-    @MockBean
+    @Mock
     private TodoService mockTodoService;
 
-    @MockBean
+    @Mock
     private TodoMapper mockTodoMapper;
 
-    @MockBean
-    private TodolistService mockTodolistService;
-
-    @MockBean
+    @Mock
     private TodolistMapper mockTodolistMapper;
 
-    @Autowired
+    @InjectMocks
+    private TodoController todoController;
+
     private MockMvc mockMvc;
 
     private static ObjectMapper om;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         om = new ObjectMapper();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(todoController)
+                                 .setControllerAdvice(new RestExceptionHandler())
+                                 .build();
     }
 
     @Test
@@ -169,7 +172,7 @@ public class TodoControllerTest {
     @Test
     public void deleteTodo_returns200_whenSuccessfullyDeleteAValidTodo() throws Exception {
 
-        when(mockTodoService.getTodo("u", "j4")).thenReturn(Todo.builder().build());
+//        when(mockTodoService.getTodo("u", "j4")).thenReturn(Todo.builder().build());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/list/u/todo/j4"))
                .andExpect(status().isOk());

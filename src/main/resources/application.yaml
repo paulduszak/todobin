@@ -3,6 +3,12 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+jwt:
+  expiration: 864_000_00
+  prefix: Bearer
+  key:
+
+
 ---
 
 spring:
@@ -15,6 +21,7 @@ spring:
         format_sql: true
 
   datasource:
+    initialization-mode: always
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password:

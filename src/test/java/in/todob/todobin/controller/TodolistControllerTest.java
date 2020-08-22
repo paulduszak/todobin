@@ -5,23 +5,22 @@ import in.todob.todobin.dto.TodoRequest;
 import in.todob.todobin.dto.TodolistRequest;
 import in.todob.todobin.dto.TodolistResponse;
 import in.todob.todobin.exception.ErrorInfo;
+import in.todob.todobin.exception.RestExceptionHandler;
 import in.todob.todobin.exception.TodolistNotFoundException;
 import in.todob.todobin.model.Todolist;
-import in.todob.todobin.service.TodoService;
 import in.todob.todobin.service.TodolistService;
-import in.todob.todobin.util.TodoMapper;
 import in.todob.todobin.util.TodolistMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -32,23 +31,18 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TodolistControllerTest {
 
-    @MockBean
+    @Mock
     private TodolistService mockTodolistService;
 
-    @MockBean
+    @Mock
     private TodolistMapper mockTodolistMapper;
 
-    @MockBean
-    private TodoService mockTodoService;
+    @InjectMocks
+    private TodolistController todolistController;
 
-    @MockBean
-    private TodoMapper mockTodoMapper;
-
-    @Autowired
     private MockMvc mockMvc;
 
     private static ObjectMapper om;
@@ -56,6 +50,10 @@ public class TodolistControllerTest {
     @Before
     public void setUp() throws Exception {
         om = new ObjectMapper();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(todolistController)
+                                 .setControllerAdvice(new RestExceptionHandler())
+                                 .build();
     }
 
     @Test
@@ -110,8 +108,8 @@ public class TodolistControllerTest {
     @Test
     public void getTodolist_returns200_withTodolist() throws Exception {
 
-        when(mockTodolistService.getTodolist("u")).thenReturn((Todolist.builder().build()));
-        when(mockTodolistMapper.mapTodolistToTodolistResponse(any(Todolist.class))).thenReturn(new TodolistResponse());
+//        when(mockTodolistService.getTodolist("u")).thenReturn((Todolist.builder().build()));
+//        when(mockTodolistMapper.mapTodolistToTodolistResponse(any(Todolist.class))).thenReturn(new TodolistResponse());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/list")
                                               .contentType(MediaType.APPLICATION_JSON))
