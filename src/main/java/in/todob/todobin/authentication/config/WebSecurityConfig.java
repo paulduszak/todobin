@@ -75,38 +75,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+            .cors()
+            .and()
+            .csrf()
+            .disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/**")
+            .permitAll();
+//            .antMatchers("/**",
+//                    "/favicon.ico",
+//                    "/**/*.png",
+//                    "/**/*.gif",
+//                    "/**/*.svg",
+//                    "/**/*.jpg",
+//                    "/**/*.html",
+//                    "/**/*.css",
+//                    "/**/*.js")
+//            .permitAll()
+//            .antMatchers("/api/auth/**")
+//            .permitAll()
+//            .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
+//            .permitAll()
+//            .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
+//            .permitAll()
+//            .anyRequest()
+//            .authenticated();
 
-        // Add our custom JWT security filter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 

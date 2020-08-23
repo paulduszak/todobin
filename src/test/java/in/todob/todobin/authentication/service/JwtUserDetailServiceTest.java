@@ -1,6 +1,6 @@
 package in.todob.todobin.authentication.service;
 
-import in.todob.todobin.authentication.model.AppUser;
+import in.todob.todobin.model.TodobinUser;
 import in.todob.todobin.authentication.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,10 +29,10 @@ public class JwtUserDetailServiceTest {
     @Test
     public void loadByUsername_returnsUserPrincipal_whenUsernameExists() {
 
-        Optional<AppUser> appUser = Optional.of(AppUser.builder()
-                                                       .username("username")
-                                                       .role("USER")
-                                                       .build());
+        Optional<TodobinUser> appUser = Optional.of(TodobinUser.builder()
+                                                               .username("username")
+                                                               .role("USER")
+                                                               .build());
 
         when(mockUserRepository.findAppUserByUsername("username"))
                 .thenReturn(appUser);
@@ -46,10 +45,10 @@ public class JwtUserDetailServiceTest {
     @Test
     public void loadByUsername_throwsUsernameNotFoundException_whenUsernameDoesNotExist() {
 
-        Optional<AppUser> appUser = Optional.of(AppUser.builder()
-                                                       .username("username")
-                                                       .role("USER")
-                                                       .build());
+        Optional<TodobinUser> appUser = Optional.of(TodobinUser.builder()
+                                                               .username("username")
+                                                               .role("USER")
+                                                               .build());
 
         when(mockUserRepository.findAppUserByUsername("username"))
                 .thenReturn(appUser);

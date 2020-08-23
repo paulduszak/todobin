@@ -1,6 +1,7 @@
 package in.todob.todobin.authentication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.todob.todobin.model.TodobinUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,14 +35,14 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(AppUser appUser) {
-        List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(appUser.getRole()));
+    public static UserPrincipal create(TodobinUser todobinUser) {
+        List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(todobinUser.getRole()));
 
         return new UserPrincipal(
-                appUser.getId(),
-                appUser.getUsername(),
-                appUser.getEmail(),
-                appUser.getPassword(),
+                todobinUser.getId(),
+                todobinUser.getUsername(),
+                todobinUser.getEmail(),
+                todobinUser.getPassword(),
                 authorities
         );
     }

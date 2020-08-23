@@ -1,10 +1,10 @@
 package in.todob.todobin.authentication.repository;
 
-import in.todob.todobin.authentication.model.AppUser;
+import in.todob.todobin.model.TodobinUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findAppUserByUsername(String username);
+public interface UserRepository extends JpaRepository<TodobinUser, Long> {
+    Optional<TodobinUser> findAppUserByUsername(String username);
 }

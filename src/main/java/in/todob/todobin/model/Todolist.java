@@ -33,8 +33,14 @@ public class Todolist {
 
     private String notes;
 
+    private boolean authRequired;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy="todolist", cascade = {CascadeType.ALL})
     private List<Todo> todos;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @JoinColumn(name = "todobin_user_id")
+    private TodobinUser todobinUser;
 
     public String getShortId() {
         if (this.id != null)

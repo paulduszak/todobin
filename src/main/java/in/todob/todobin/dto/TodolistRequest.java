@@ -12,5 +12,6 @@ import java.util.List;
 public class TodolistRequest {
     private String title;
     private String notes;
+    private boolean authRequired;
     private List<TodoRequest> todos;
 }

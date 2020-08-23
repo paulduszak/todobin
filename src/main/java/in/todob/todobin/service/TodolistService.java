@@ -8,6 +8,7 @@ import in.todob.todobin.repository.TodolistRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import in.todob.todobin.util.TodolistMapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class TodolistService {
         return todolists;
     }
 
+//    @PostFilter("filterObject.authRequired == true && filterObject. != authentication.principal.username")
     public Todolist getTodolist(String shortId) {
         Optional<Todolist> list = todolistRepository.findById(ShortIdMapper.decode(shortId));
 
