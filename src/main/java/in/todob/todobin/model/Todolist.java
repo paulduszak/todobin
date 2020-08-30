@@ -1,7 +1,5 @@
 package in.todob.todobin.model;
 
-import in.todob.todobin.dto.TodoRequest;
-import in.todob.todobin.dto.TodoResponse;
 import in.todob.todobin.util.ShortIdMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -38,7 +35,7 @@ public class Todolist {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="todolist", cascade = {CascadeType.ALL})
     private List<Todo> todos;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todobin_user_id")
     private TodobinUser todobinUser;
 

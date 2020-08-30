@@ -5,6 +5,7 @@ import in.todob.todobin.dto.TodolistRequest;
 import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodolistNotFoundException;
 import in.todob.todobin.model.Todo;
+import in.todob.todobin.model.TodobinUser;
 import in.todob.todobin.model.Todolist;
 import in.todob.todobin.repository.TodolistRepository;
 import in.todob.todobin.util.ShortIdMapper;
@@ -13,8 +14,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +38,12 @@ public class TodolistServiceTest {
 
     @Mock
     private TodolistRepository mockTodolistRepository;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
 
     private TodolistService todolistService;
 
@@ -75,6 +86,64 @@ public class TodolistServiceTest {
         assertThat(result.getTodos().get(0).getTitle()).isEqualTo("A todo");
         assertThat(result.getTodos().get(0).getNotes()).isEqualTo("A todo description");
         assertThat(result.getTodos().get(0).getShortId()).isEqualTo(ShortIdMapper.encode(result.getTodos().get(0).getId()));
+    }
+
+    @Test
+    public void createTodolist_setsTodobinUser_whenSecurityContext_isNotAnonymousAuthenticationToken() {
+        ArgumentCaptor<Todolist> acTodolist = ArgumentCaptor.forClass(Todolist.class);
+
+        TodoRequest todoRequest = new TodoRequest();
+        todoRequest.setTitle("A todo");
+        todoRequest.setNotes("A todo description");
+
+        TodolistRequest todolistRequest = new TodolistRequest();
+        todolistRequest.setTitle("A todolist");
+        todolistRequest.setNotes("A todolist description");
+        todolistRequest.setTodos(asList(todoRequest));
+
+        TodobinUser todobinUser = TodobinUser.builder().id(1L).username("testUser").build();
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(authentication);
+        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(todobinUser);
+
+        todolistService.createTodolist(todolistRequest);
+
+        verify(mockTodolistRepository).save(acTodolist.capture());
+
+        assertThat(acTodolist.getValue().getTodobinUser().getId()).isEqualTo(1L);
+        assertThat(acTodolist.getValue().getTodobinUser().getUsername()).isEqualTo("testUser");
+    }
+
+    @Test
+    public void createTodolist_doesNotSetTodobinUser_whenSecurityContext_isAnonymousAuthenticationToken() {
+        ArgumentCaptor<Todolist> acTodolist = ArgumentCaptor.forClass(Todolist.class);
+
+        TodoRequest todoRequest = new TodoRequest();
+        todoRequest.setTitle("A todo");
+        todoRequest.setNotes("A todo description");
+
+        TodolistRequest todolistRequest = new TodolistRequest();
+        todolistRequest.setTitle("A todolist");
+        todolistRequest.setNotes("A todolist description");
+        todolistRequest.setTodos(asList(todoRequest));
+
+        TodobinUser todobinUser = TodobinUser.builder().id(1L).username("testUser").build();
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(null);
+
+        todolistService.createTodolist(todolistRequest);
+
+        verify(mockTodolistRepository).save(acTodolist.capture());
+
+        assertThat(acTodolist.getValue().getTodobinUser()).isNull();
     }
 
     @Test

@@ -1,2 +1,2 @@
 INSERT INTO todobin_user (id, username, email, password, role, enabled) VALUES (1, 'user', 'user@gmail.com', '$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi', 'USER', true);
-INSERT INTO todobin_user (id, username, email, password, role, enabled) VALUES (2, 'admin', 'admin@gmail.com', '$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQK', 'ADMIN', true);
+INSERT INTO todobin_user (id, username, email, password, role, enabled) VALUES (2, 'admin', 'admin@gmail.com', '$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi', 'ADMIN', true);

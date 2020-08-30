@@ -4,16 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TodobinUser {
+public class TodobinUser implements UserDetails {
+
     @Id
     @Column(updatable = false, nullable = false)
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -31,8 +36,25 @@ public class TodobinUser {
     @Column(nullable = false)
     private String role;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="todobinUser", cascade = {CascadeType.ALL})
-    private List<Todolist> todolists;
-
     private boolean enabled;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority(role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 }

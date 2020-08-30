@@ -3,12 +3,16 @@ package in.todob.todobin.service;
 import in.todob.todobin.dto.TodolistRequest;
 import in.todob.todobin.exception.BadRequest;
 import in.todob.todobin.exception.TodolistNotFoundException;
+import in.todob.todobin.model.TodobinUser;
 import in.todob.todobin.model.Todolist;
 import in.todob.todobin.repository.TodolistRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import in.todob.todobin.util.TodolistMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,11 +33,15 @@ public class TodolistService {
         if (todolistRequest == null || todolistRequest.getTitle() == null || todolistRequest.getTodos() == null)
             throw new BadRequest();
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Todolist todolist = todolistMapper.mapTodolistRequestToTodolist(todolistRequest);
 
         todolist.getTodos()
                 .stream()
                 .forEach(todo -> todo.setTodolist(todolist));
+
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken))
+            todolist.setTodobinUser((TodobinUser) authentication.getPrincipal());
 
         return todolistRepository.save(todolist);
     }

@@ -5,7 +5,6 @@ import in.todob.todobin.authentication.service.JwtUserDetailService;
 import in.todob.todobin.authentication.utils.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -107,7 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //            .anyRequest()
 //            .authenticated();
 
-//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 
