@@ -9,6 +9,7 @@ import in.todob.todobin.repository.TodolistRepository;
 import in.todob.todobin.util.ShortIdMapper;
 import in.todob.todobin.util.TodolistMapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -59,6 +60,7 @@ public class TodolistService {
         return todolistRepository.save(existingTodo);
     }
 
+    //@PostFilter("!returnObject.authRequired")
     public List<Todolist> getTodolists() {
         List<Todolist> todolists = todolistRepository.findAll();
 
@@ -66,7 +68,7 @@ public class TodolistService {
         return todolists;
     }
 
-//    @PostFilter("filterObject.authRequired == true && filterObject. != authentication.principal.username")
+    @PostAuthorize("!returnObject.authRequired or (isAuthenticated() and principal.id == returnObject.todobinUser.id)")
     public Todolist getTodolist(String shortId) {
         Optional<Todolist> list = todolistRepository.findById(ShortIdMapper.decode(shortId));
 

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -106,6 +107,7 @@ public class TodolistControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = "userA")
     public void getTodolist_returns200_withTodolist() throws Exception {
 
 //        when(mockTodolistService.getTodolist("u")).thenReturn((Todolist.builder().build()));

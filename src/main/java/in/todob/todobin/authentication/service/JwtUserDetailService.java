@@ -17,6 +17,6 @@ public class JwtUserDetailService implements org.springframework.security.core.u
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findAppUserByUsername(username)
-                             .orElseThrow(() -> new UsernameNotFoundException("Could not find user.s"));
+                             .orElseThrow(() -> new UsernameNotFoundException("Could not find user."));
     }
 }
