@@ -129,6 +129,7 @@ public class TodolistServiceTest {
         TodolistRequest todolistRequest = new TodolistRequest();
         todolistRequest.setTitle("A todolist");
         todolistRequest.setNotes("A todolist description");
+        todolistRequest.setAuthRequired(true);
         todolistRequest.setTodos(asList(todoRequest));
 
         TodobinUser todobinUser = TodobinUser.builder().id(1L).username("testUser").build();
@@ -144,6 +145,7 @@ public class TodolistServiceTest {
         verify(mockTodolistRepository).save(acTodolist.capture());
 
         assertThat(acTodolist.getValue().getTodobinUser()).isNull();
+        assertThat(acTodolist.getValue().isAuthRequired()).isFalse();
     }
 
     @Test

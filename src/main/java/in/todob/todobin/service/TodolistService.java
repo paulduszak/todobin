@@ -43,6 +43,8 @@ public class TodolistService {
 
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken))
             todolist.setTodobinUser((TodobinUser) authentication.getPrincipal());
+        else
+            todolist.setAuthRequired(false);
 
         return todolistRepository.save(todolist);
     }
